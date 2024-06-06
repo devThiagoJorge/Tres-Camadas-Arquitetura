@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevIO.Data", "src\DevIO.Data\DevIO.Data.csproj", "{FAA24F5D-CE42-4488-A826-4524927F00BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevIO.Data", "src\DevIO.Data\DevIO.Data.csproj", "{FAA24F5D-CE42-4488-A826-4524927F00BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevIo.Domain", "src\DevIo.Domain\DevIo.Domain.csproj", "{938A34B5-F8A4-485B-A5AB-3409EF511A78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevIo.Domain", "src\DevIo.Domain\DevIo.Domain.csproj", "{938A34B5-F8A4-485B-A5AB-3409EF511A78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevIO.Api", "src\DevIO.Api\DevIO.Api.csproj", "{36611B5D-096D-4CA3-BD86-73465EDFAC14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{938A34B5-F8A4-485B-A5AB-3409EF511A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{938A34B5-F8A4-485B-A5AB-3409EF511A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{938A34B5-F8A4-485B-A5AB-3409EF511A78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36611B5D-096D-4CA3-BD86-73465EDFAC14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36611B5D-096D-4CA3-BD86-73465EDFAC14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36611B5D-096D-4CA3-BD86-73465EDFAC14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36611B5D-096D-4CA3-BD86-73465EDFAC14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

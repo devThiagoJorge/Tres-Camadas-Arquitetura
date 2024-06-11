@@ -1,4 +1,4 @@
-namespace DevIO.Api
+namespace DevIO.API
 {
     public class WeatherForecast
     {

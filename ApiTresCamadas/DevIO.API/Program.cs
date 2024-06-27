@@ -1,3 +1,4 @@
+using DevIO.API.Configurations;
 using DevIO.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.ResolveDependencies();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

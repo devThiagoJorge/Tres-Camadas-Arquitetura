@@ -2,8 +2,8 @@
 using DevIo.Domain.Interfaces;
 using DevIo.Domain.Models;
 using DevIO.API.DTO;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace DevIO.API.Controllers
 {
@@ -16,7 +16,8 @@ namespace DevIO.API.Controllers
 
         public ProdutosController(IProdutoService produtoService,
             IProdutoRepository produtoRepository,
-            IMapper mapper)
+            IMapper mapper, 
+            INotificador notificador) : base(notificador)
         {
             _produtoService = produtoService;
             _produtoRepository = produtoRepository;
@@ -24,9 +25,10 @@ namespace DevIO.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProdutoDto>> ObterTodos() =>
-            _mapper.Map<IEnumerable<ProdutoDto>>(await _produtoRepository.ObterProdutosFornecedores());
-
+        public async Task<IEnumerable<ProdutoDto>> ObterTodos()
+        {
+            return _mapper.Map<IEnumerable<ProdutoDto>>(await _produtoRepository.ObterProdutosFornecedores());
+        }
 
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<ProdutoDto>> ObterPorId(Guid id)
@@ -47,17 +49,17 @@ namespace DevIO.API.Controllers
 
             await _produtoService.Adicionar(_mapper.Map<Produto>(produtoDto));
 
-            return CustomResponse(produtoDto);
+            return CustomResponse(HttpStatusCode.Created, produtoDto);
 
         }
 
-        [HttpPut("id:guid")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Atualizar(Guid id, ProdutoDto produtoDto)
         {
             if (id != produtoDto.Id)
             {
-                NotificaErro("Os ids informados não são iguais.");
-                return CustomResponse();
+                NotificarErro("Os ids informados não são iguais.");
+                return CustomResponse(HttpStatusCode.BadRequest);
             }
 
             var produtoAtualizacao = await ObterProdutoPorId(id);
@@ -69,7 +71,7 @@ namespace DevIO.API.Controllers
             produtoAtualizacao.Ativo = produtoDto.Ativo;
 
             await _produtoService.Atualizar(_mapper.Map<Produto>(produtoAtualizacao));
-            return CustomResponse();
+            return CustomResponse(HttpStatusCode.NoContent);
         }
 
         [HttpDelete("{id:guid}")]
@@ -82,7 +84,7 @@ namespace DevIO.API.Controllers
 
             await _produtoService.Remover(id);
 
-            return CustomResponse();
+            return CustomResponse(HttpStatusCode.NoContent);
         }
 
 

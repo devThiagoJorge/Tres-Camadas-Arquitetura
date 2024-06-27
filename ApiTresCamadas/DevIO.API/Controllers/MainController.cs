@@ -1,39 +1,62 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DevIo.Domain.Interfaces;
+using DevIo.Domain.Notificacoes;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Net;
 
 namespace DevIO.API.Controllers
 {
     [ApiController]
     public abstract class MainController : ControllerBase
     {
-        protected bool OperacaoValida()
+        private readonly INotificador _notificador;
+
+        public MainController(INotificador notificador)
         {
-            return true;
+            _notificador = notificador;
         }
 
-        protected ActionResult CustomResponse(object result = null)
+        protected bool OperacaoValida()
+        {
+            return !_notificador.TemNotificacao();
+        }
+
+        protected ActionResult CustomResponse(HttpStatusCode statusCode = HttpStatusCode.OK, object result = null)
         {
             if (OperacaoValida())
             {
-                return new ObjectResult(result);
+                return new ObjectResult(result) { 
+                    StatusCode = Convert.ToInt32(statusCode), 
+                };
             }
 
             return BadRequest(new
             {
-
+                errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
             });
         }
 
         protected ActionResult CustomResponse(ModelStateDictionary modelState)
         {
-            if(!modelState.IsValid) { }
+            if (!modelState.IsValid) NotificarErroModelInvalida(modelState);
 
             return CustomResponse();
         }
 
-        protected void NotificaErro(string mensagem)
+        protected void NotificarErroModelInvalida(ModelStateDictionary modelState)
         {
+            var erros = modelState.Values.SelectMany(e => e.Errors);
 
+            foreach (var erro in erros)
+            {
+                var erroMsg = erro.Exception == null ? erro.ErrorMessage : erro.Exception.Message;
+                NotificarErro(erroMsg);
+            }
+        }
+
+        protected void NotificarErro(string mensagem)
+        {
+            _notificador.Handle(new Notificacao(mensagem));
         }
     }
 }

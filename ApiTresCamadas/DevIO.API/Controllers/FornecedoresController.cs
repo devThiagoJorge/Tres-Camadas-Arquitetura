@@ -3,6 +3,7 @@ using DevIO.API.DTO;
 using DevIo.Domain.Interfaces;
 using DevIo.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace DevIO.API.Controllers
 {
@@ -15,7 +16,8 @@ namespace DevIO.API.Controllers
 
         public FornecedoresController(IFornecedorService fornecedorService,
             IFornecedorRepository fornecedorRepository,
-            IMapper mapper)
+            IMapper mapper,
+            INotificador notificador) : base(notificador)
         {
             _fornecedorService = fornecedorService;
             _fornecedorRepository = fornecedorRepository;
@@ -23,8 +25,10 @@ namespace DevIO.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<FornecedorDto>> ObterTodos() =>
-            _mapper.Map<IEnumerable<FornecedorDto>>(await _fornecedorRepository.ObterTodos());
+        public async Task<IEnumerable<FornecedorDto>> ObterTodos()
+        {
+            return _mapper.Map<IEnumerable<FornecedorDto>>(await _fornecedorRepository.ObterTodos());
+        }
 
 
         [HttpGet("{id:guid}")]
@@ -46,25 +50,24 @@ namespace DevIO.API.Controllers
 
             await _fornecedorService.Adicionar(_mapper.Map<Fornecedor>(fornecedorDto));
 
-            return CustomResponse(fornecedorDto);
+            return CustomResponse(HttpStatusCode.Created, fornecedorDto);
 
         }
 
-        [HttpPut("id:guid")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Atualizar(Guid id, FornecedorDto fornecedorDto)
         {
             if (id != fornecedorDto.Id)
             {
-                NotificaErro("Os ids informados não são iguais.");
+                NotificarErro("Os ids informados não são iguais.");
                 return CustomResponse();
             }
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
- 
 
             await _fornecedorService.Atualizar(_mapper.Map<Fornecedor>(fornecedorDto));
-            return CustomResponse();
+            return CustomResponse(HttpStatusCode.NoContent);
         }
 
         [HttpDelete("{id:guid}")]
@@ -77,7 +80,7 @@ namespace DevIO.API.Controllers
 
             await _fornecedorService.Remover(id);
 
-            return CustomResponse();
+            return CustomResponse(HttpStatusCode.NoContent);
         }
 
 
